@@ -1,0 +1,53 @@
+name: PEACOCK 120 FPS APK Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Make Gradle executable
+        run: |
+          if [ -f "./gradlew" ]; then
+            chmod +x ./gradlew
+          fi
+
+      - name: Build Debug APK
+        run: |
+          if [ -f "./gradlew" ]; then
+            ./gradlew assembleDebug --stacktrace
+          else
+            echo "ERROR: Gradle project not found."
+            echo "Upload the Android project files first."
+            exit 1
+          fi
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: PEACOCK-120-FPS-APK
+          path: app/build/outputs/apk/**/*.apk120-FPS-FF/
+├── .github/
+│   └── workflows/
+│       └── blank.yml
+├── app/
+│   ├── build.gradle
+│   └── src/
+├── build.gradle
+├── settings.gradle
+└── gradlew
